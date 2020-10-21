@@ -2,7 +2,6 @@ import requests, time
 from bs4 import BeautifulSoup
 import smtplib, ssl
 #todo add dictionary of keywords
-#(DONE!!!) todo send email with reported threads
 #todo actually login in Steam
 #todo launch delete/ban on positive.
 #Setting up the email---------------
@@ -20,10 +19,8 @@ message = '''\\
 ScanTimer = 15 #Delay between requesting pages
 
 for pagecount in range(1,4):
-    #We'll 
     URL = 'https://steamcommunity.com/discussions/forum/29/?fp='
     page = requests.get(URL+str(pagecount))
-    #print(page)
 
     soup = BeautifulSoup(page.content, 'html.parser')
 
@@ -39,9 +36,6 @@ for pagecount in range(1,4):
         if x :
             print(threadURL['href'], end=' subject: ')
             print(threadTitle.text.strip())
-            #print(emailcontent)
-            #print(x)
-            #print(threadTitleUP.upper())
             try: 
                 server = smtplib.SMTP_SSL(smtp_server, port, context=context)
                 server.login(sender_email, password)
