@@ -4,6 +4,7 @@ import smtplib, ssl
 #todo add dictionary of keywords
 #todo actually login in Steam
 #todo launch delete/ban on positive.
+#todo fix unicode encode error
 #Setting up the email---------------
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
@@ -15,6 +16,7 @@ message = '''\\
      ... From: titodronedev@gmail.com
      ... Subject: Actionable thread detected in Scan'...
      ...URL: '''
+emailcontent = ''
 #-----------------------------------
 ScanTimer = 15 #Delay between requesting pages
 
@@ -29,17 +31,23 @@ for pagecount in range(1,4):
     for each in results:
         threadURL = each.find('a', href=True)
         threadTitle = each.find(class_='forum_topic_name')
+        threadOP = each.find(class_="forum_topic_op")
         threadTitleUP = str(threadTitle.text.strip())
-
-        emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip())
-        x= "SARAH" in threadTitleUP.upper()
+        x= "STEAM" in threadTitleUP.upper()
         if x :
-            print(threadURL['href'], end=' subject: ')
-            print(threadTitle.text.strip())
-            try: 
-                server = smtplib.SMTP_SSL(smtp_server, port, context=context)
-                server.login(sender_email, password)
-                server.sendmail(sender_email, receiver_email, emailcontent)
-            except:
-                print("laca gamo")
+            #print(threadURL['href'], end=' subject: ')
+            #print(threadTitle.text.strip(), end=' By: ')
+            #print(threadOP.text.strip())
+            if emailcontent == '':
+                emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
+            else:
+                emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
     time.sleep(ScanTimer)
+    #
+if emailcontent != '':
+    try: 
+        server = smtplib.SMTP_SSL(smtp_server, port, context=context)
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, emailcontent)
+    except Exception as ex:
+        print("Exception: "+str(ex))
