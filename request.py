@@ -4,7 +4,6 @@ import smtplib, ssl
 #todo add dictionary of keywords
 #todo actually login in Steam
 #todo launch delete/ban on positive.
-#todo fix unicode encode error
 #Setting up the email---------------
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
