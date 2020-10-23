@@ -1,4 +1,4 @@
-import requests, time 
+import requests, time
 from bs4 import BeautifulSoup
 import smtplib, ssl
 #todo add dictionary of keywords
@@ -20,7 +20,8 @@ emailcontent = ''
 #-----------------------------------
 ScanTimer = 15 #Delay between requesting pages
 
-for pagecount in range(1,4):
+for pagecount in range(1,2):
+    #print('Checqueando pagina '+str(pagecount))
     URL = 'https://steamcommunity.com/discussions/forum/29/?fp='
     page = requests.get(URL+str(pagecount))
 
@@ -33,21 +34,25 @@ for pagecount in range(1,4):
         threadTitle = each.find(class_='forum_topic_name')
         threadOP = each.find(class_="forum_topic_op")
         threadTitleUP = str(threadTitle.text.strip())
-        x= "STEAM" in threadTitleUP.upper()
+        x= "SARAH" in threadTitleUP.upper()
+        #print('chequeando positivo')
         if x :
-            #print(threadURL['href'], end=' subject: ')
-            #print(threadTitle.text.strip(), end=' By: ')
-            #print(threadOP.text.strip())
+            print('hilo coincidente')
+            print(threadURL['href'], end=' subject: ')
+            print(threadTitle.text.strip(), end=' By: ')
+            print(threadOP.text.strip())
             if emailcontent == '':
-                emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
+                 emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
             else:
                 emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
     time.sleep(ScanTimer)
     #
 if emailcontent != '':
     try: 
+        #print('Enviando mail')
+        #print('Contenido:'+emailcontent)
         server = smtplib.SMTP_SSL(smtp_server, port, context=context)
         server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, emailcontent)
+        server.sendmail(sender_email, receiver_email, emailcontent.encode('utf-8'))
     except Exception as ex:
         print("Exception: "+str(ex))
