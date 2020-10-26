@@ -1,23 +1,28 @@
-import requests, time
+import requests, time, json
 from bs4 import BeautifulSoup
 import smtplib, ssl
 #todo add dictionary of keywords
 #todo actually login in Steam
 #todo launch delete/ban on positive.
+#
+#---Load properties from file----
+with open('properties.json') as f:
+  properties = json.load(f)
+#-------------------------
 #Setting up the email---------------
-port = 465  # For SSL
-smtp_server = "smtp.gmail.com"
-password = "lucasgmail"
+port = int(properties["port"])  # For SSL
+smtp_server = properties["smtp"]
+password = properties["password"]
 context = ssl.create_default_context()
-sender_email = "titodronedev@gmail.com"
-receiver_email = "titoshivan@gmail.com"
+sender_email = properties["account"]
+receiver_email = properties["receiver"]
 message = '''\\
      ... From: titodronedev@gmail.com
      ... Subject: Actionable thread detected in Scan'...
-     ...URL: '''
+     ... '''
 emailcontent = ''
+ScanTimer = properties["rescantimer"] #Delay between requesting pages
 #-----------------------------------
-ScanTimer = 15 #Delay between requesting pages
 
 for pagecount in range(1,2):
     #print('Checqueando pagina '+str(pagecount))
@@ -33,7 +38,7 @@ for pagecount in range(1,2):
         threadTitle = each.find(class_='forum_topic_name')
         threadOP = each.find(class_="forum_topic_op")
         threadTitleUP = str(threadTitle.text.strip())
-        x= "SARAH" in threadTitleUP.upper()
+        x= "CSGO" in threadTitleUP.upper()
         #print('chequeando positivo')
         if x :
             print('hilo coincidente')
