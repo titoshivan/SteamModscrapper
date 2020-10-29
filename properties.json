@@ -3,7 +3,7 @@
     "account": "botmail@isp.com",
     "smtp": "smtp.server",
     "port":465,
-    "receiver": "receiver@email.com",
+    "receiver": "titoshivan@gmail.com",
     "message": "emailbody string",
     "rescantimer": 15
 }

@@ -8,6 +8,9 @@ import smtplib, ssl
 #---Load properties from file----
 with open('properties.json') as f:
   properties = json.load(f)
+#---Load filter chains
+with open('filters.json') as f:
+  filters = json.load(f)
 #-------------------------
 #Setting up the email---------------
 port = int(properties["port"])  # For SSL
@@ -24,7 +27,7 @@ emailcontent = ''
 ScanTimer = properties["rescantimer"] #Delay between requesting pages
 #-----------------------------------
 
-for pagecount in range(1,2):
+for pagecount in range(1,3):
     #print('Checqueando pagina '+str(pagecount))
     URL = 'https://steamcommunity.com/discussions/forum/29/?fp='
     page = requests.get(URL+str(pagecount))
@@ -38,17 +41,19 @@ for pagecount in range(1,2):
         threadTitle = each.find(class_='forum_topic_name')
         threadOP = each.find(class_="forum_topic_op")
         threadTitleUP = str(threadTitle.text.strip())
-        x= "CSGO" in threadTitleUP.upper()
-        #print('chequeando positivo')
-        if x :
-            print('hilo coincidente')
-            print(threadURL['href'], end=' subject: ')
-            print(threadTitle.text.strip(), end=' By: ')
-            print(threadOP.text.strip())
-            if emailcontent == '':
-                 emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
-            else:
-                emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
+        for item in filters["TITLES"]:
+            print("scanning page "+str(pagecount)+" thread "+threadTitleUP+"for "+item)
+            x= item in threadTitleUP.upper()
+            #print('chequeando positivo')
+            if x :
+                print('hilo coincidente')
+                print(threadURL['href'], end=' subject: ')
+                print(threadTitle.text.strip(), end=' By: ')
+                print(threadOP.text.strip())
+                if emailcontent == '':
+                    emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
+                else:
+                    emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
     time.sleep(ScanTimer)
     #
 if emailcontent != '':
