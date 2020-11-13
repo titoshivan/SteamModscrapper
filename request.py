@@ -1,6 +1,7 @@
 import requests, time, json
 from bs4 import BeautifulSoup
 import smtplib, ssl
+import ruleEngine #rule engine will go there
 #todo add dictionary of keywords
 #todo actually login in Steam
 #todo launch delete/ban on positive.
@@ -41,25 +42,27 @@ for pagecount in range(1,3):
         threadTitle = each.find(class_='forum_topic_name')
         threadOP = each.find(class_="forum_topic_op")
         threadTitleUP = str(threadTitle.text.strip())
-        for item in filters["TITLES"]:
-            print("scanning page "+str(pagecount)+" thread "+threadTitleUP+"for "+item)
-            x= item in threadTitleUP.upper()
-            #print('chequeando positivo')
-            if x :
-                print('hilo coincidente')
-                print(threadURL['href'], end=' subject: ')
-                print(threadTitle.text.strip(), end=' By: ')
-                print(threadOP.text.strip())
-                if emailcontent == '':
-                    emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
-                else:
-                    emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
+        print("scanning page "+str(pagecount)+" thread "+threadTitleUP)
+        #TODO Here we should have a proper rules engine.
+        # x= item in threadTitleUP.upper()
+        x = ruleEngine.runRulesEngine(each)
+        #print(ruleEngine.runRulesEngine(each))
+        #print('chequeando positivo')
+        if x :
+            print('hilo coincidente')
+            #print(threadURL['href'], end=' subject: ')
+            #print(threadTitle.text.strip(), end=' By: ')
+            #print(threadOP.text.strip())
+            if emailcontent == '':
+                emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
+            else:
+                emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
     time.sleep(ScanTimer)
     #
 if emailcontent != '':
     try: 
-        #print('Enviando mail')
-        #print('Contenido:'+emailcontent)
+        print('Enviando mail')
+        print('Contenido:'+emailcontent)
         server = smtplib.SMTP_SSL(smtp_server, port, context=context)
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, emailcontent.encode('utf-8'))
