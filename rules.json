@@ -5,13 +5,19 @@
             "username": ""
         },
         {
-            "rulename": "Posted by",
+            "rulename": "Posted by SKBLUE",
             "SubjectString" : "",
-            "username": "Tito Shivan"
+            "username": "SKBLUE"
         },
         {
-            "rulename": "Tasca",
-            "SubjectString" : "PUBG",
+            "rulename": "XBOX in title",
+            "SubjectString" : "XBOX",
             "username": ""
+        }
+        ,
+        {
+            "rulename": "CHIDORIs by LUISIRO5",
+            "SubjectString" : "CHIDORI",
+            "username": "LUISIRO"
         }
 ]

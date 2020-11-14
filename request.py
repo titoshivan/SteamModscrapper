@@ -1,25 +1,27 @@
 import requests, time, json
 from bs4 import BeautifulSoup
 import smtplib, ssl
-import ruleEngine #rule engine will go there
-#todo add dictionary of keywords
+import ruleEngine 
 #todo actually login in Steam
 #todo launch delete/ban on positive.
 #
 #---Load properties from file----
 with open('properties.json') as f:
   properties = json.load(f)
-#---Load filter chains
+#---Load filter chains DEPRECATED
+#-- rules now go in the rules.json file
 with open('filters.json') as f:
   filters = json.load(f)
 #-------------------------
-#Setting up the email---------------
+
+#---Setting up the email---------------
 port = int(properties["port"])  # For SSL
 smtp_server = properties["smtp"]
 password = properties["password"]
 context = ssl.create_default_context()
 sender_email = properties["account"]
 receiver_email = properties["receiver"]
+#TODO Make the email fancy with proper HTML and URL tagging
 message = '''\\
      ... From: titodronedev@gmail.com
      ... Subject: Actionable thread detected in Scan'...
@@ -30,6 +32,7 @@ ScanTimer = properties["rescantimer"] #Delay between requesting pages
 
 for pagecount in range(1,3):
     #print('Checqueando pagina '+str(pagecount))
+    #TODO iterate URLS stored in watchlist.json
     URL = 'https://steamcommunity.com/discussions/forum/29/?fp='
     page = requests.get(URL+str(pagecount))
 
@@ -42,7 +45,7 @@ for pagecount in range(1,3):
         threadTitle = each.find(class_='forum_topic_name')
         threadOP = each.find(class_="forum_topic_op")
         threadTitleUP = str(threadTitle.text.strip())
-        print("scanning page "+str(pagecount)+" thread "+threadTitleUP)
+        print("scanning page "+str(pagecount)+" thread "+ threadTitleUP+ " by " +str(threadOP.text.strip()))
         #TODO Here we should have a proper rules engine.
         # x= item in threadTitleUP.upper()
         x = ruleEngine.runRulesEngine(each)
