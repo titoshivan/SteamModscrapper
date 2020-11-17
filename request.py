@@ -22,6 +22,7 @@ context = ssl.create_default_context()
 sender_email = properties["account"]
 receiver_email = properties["receiver"]
 #TODO Make the email fancy with proper HTML and URL tagging
+#TODO Pull mail sending to its own module
 message = '''\\
      ... From: titodronedev@gmail.com
      ... Subject: Actionable thread detected in Scan'...

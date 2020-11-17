@@ -5,19 +5,24 @@
             "username": ""
         },
         {
-            "rulename": "Posted by SKBLUE",
-            "SubjectString" : "",
-            "username": "SKBLUE"
+            "rulename": "ZARAH Rule",
+            "SubjectString" : "ZARAH",
+            "username": ""
         },
         {
-            "rulename": "XBOX in title",
-            "SubjectString" : "XBOX",
+            "rulename": "Posted by JEAN7U7",
+            "SubjectString" : "",
+            "username": "JEAN7U7"
+        },
+        {
+            "rulename": "CSGO in title",
+            "SubjectString" : "CSGO",
             "username": ""
         }
         ,
         {
-            "rulename": "CHIDORIs by LUISIRO5",
-            "SubjectString" : "CHIDORI",
-            "username": "LUISIRO"
+            "rulename": "STEAMWORKS HEYOUNG",
+            "SubjectString" : "STEAMWORKS",
+            "username": "HEYOUNG"
         }
 ]
