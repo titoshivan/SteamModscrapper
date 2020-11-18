@@ -1,7 +1,7 @@
 import requests, time, json
 from bs4 import BeautifulSoup
-import smtplib, ssl
-import ruleEngine 
+#import smtplib, ssl #Moved to emailReport.py
+import emailReport, ruleEngine 
 #todo actually login in Steam
 #todo launch delete/ban on positive.
 #
@@ -18,7 +18,7 @@ with open('filters.json') as f:
 port = int(properties["port"])  # For SSL
 smtp_server = properties["smtp"]
 password = properties["password"]
-context = ssl.create_default_context()
+#context = ssl.create_default_context()
 sender_email = properties["account"]
 receiver_email = properties["receiver"]
 #TODO Make the email fancy with proper HTML and URL tagging
@@ -57,18 +57,8 @@ for pagecount in range(1,3):
             #print(threadURL['href'], end=' subject: ')
             #print(threadTitle.text.strip(), end=' By: ')
             #print(threadOP.text.strip())
-            if emailcontent == '':
-                emailcontent = message + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
-            else:
-                emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
+            emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
     time.sleep(ScanTimer)
     #
 if emailcontent != '':
-    try: 
-        print('Enviando mail')
-        print('Contenido:'+emailcontent)
-        server = smtplib.SMTP_SSL(smtp_server, port, context=context)
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, emailcontent.encode('utf-8'))
-    except Exception as ex:
-        print("Exception: "+str(ex))
+    emailReport.sendReport(receiver_email, emailcontent)
