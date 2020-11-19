@@ -31,7 +31,7 @@ emailcontent = ''
 ScanTimer = properties["rescantimer"] #Delay between requesting pages
 #-----------------------------------
 
-for pagecount in range(1,3):
+for pagecount in range(1,2):
     #print('Checqueando pagina '+str(pagecount))
     #TODO iterate URLS stored in watchlist.json
     URL = 'https://steamcommunity.com/discussions/forum/29/?fp='
@@ -57,7 +57,7 @@ for pagecount in range(1,3):
             #print(threadURL['href'], end=' subject: ')
             #print(threadTitle.text.strip(), end=' By: ')
             #print(threadOP.text.strip())
-            emailcontent = emailcontent + str(threadURL['href']) + " " + str(threadTitle.text.strip()) + " by " +str(threadOP.text.strip()) + "\n"
+            emailcontent = emailcontent + str(threadURL['href']) + " \"" + str(threadTitle.text.strip()) + "\" by \"" +str(threadOP.text.strip()) + "\"\n"
     time.sleep(ScanTimer)
     #
 if emailcontent != '':

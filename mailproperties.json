@@ -1,0 +1,7 @@
+{
+    "password" :"1234567890",
+    "account": "botmail@isp.com",
+    "smtp": "smtp.server",
+    "port":465,
+    "rescantimer": 15
+}
