@@ -5,5 +5,5 @@
     "port":465,
     "receiver": "titoshivan@gmail.com",
     "message": "emailbody string",
-    "rescantimer": 15
+    "rescantimer": 5
 }

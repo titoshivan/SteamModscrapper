@@ -1,7 +1,8 @@
 {
     "password" :"1234567890",
     "account": "botmail@isp.com",
+    "accountname": "Steam Moderation Bot",
     "smtp": "smtp.server",
     "port":465,
-    "rescantimer": 15
+    "rescantimer": 5
 }

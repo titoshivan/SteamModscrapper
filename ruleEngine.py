@@ -25,6 +25,7 @@ def runRulesEngine(threadObject):
     threadOP = threadObject.find(class_="forum_topic_op")
     threadoOPUpper = str(threadOP.text.strip())
     #we iterate the rules over the forum thread
+    #TODO make subject and poster match iterable (Positive if 'string1' or 'string2' or 'string3' in thread title )
     for rule in ruleset:
         if (not ruleFound):
             print("         ###### Rule Check: " + rule["rulename"])

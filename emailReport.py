@@ -11,6 +11,7 @@ with open('properties_valid.json') as f:
 port = int(properties["port"])  # For SSL
 smtp_server = properties["smtp"]
 password = properties["password"]
+senderName = properties["accountname"]
 context = ssl.create_default_context()
 sender_email = properties["account"]
 subject = "Hilos detectados"
@@ -22,13 +23,15 @@ bodyHeader = "The following threads have been detected by the Steam Automod: \n"
 def sendReport (receiver, content):
     try: 
         print("·······ENVIANDO MAIL············")
-        print("De  : "+sender_email)
+        #print("De  : "+sender_email)
+        print("De  : "+senderName)
         print("Para: "+ receiver)
         print("Asunto: " + subject)
         print('Contenido:'+ content)
         #
         msg = MIMEMultipart()
-        msg['From'] = sender_email
+        #msg['From'] = sender_email
+        msg['From'] = senderName
         msg['To'] = receiver
         msg['Subject'] = 'Threads detected'
         body = bodyHeader + content
