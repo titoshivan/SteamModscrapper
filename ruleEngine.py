@@ -7,7 +7,7 @@ def checkTitleRule(ruleString, titleString):
   if ruleString != "":
     if ruleString in titleString:
       titleRuleFound = True
-    print ("         ------- IS \"" + ruleString + "\" in \"" + titleString + "\"? = " + str(titleRuleFound))
+    #print ("         ------- IS \"" + ruleString + "\" in \"" + titleString + "\"? = " + str(titleRuleFound))
   return titleRuleFound
 #
 def checkThreadOP(nameString, OPString):
@@ -15,7 +15,7 @@ def checkThreadOP(nameString, OPString):
   if nameString != "":
     if nameString in OPString:
       threadOPFound = True
-    print ("         ------- IS \"" + nameString + "\" in \"" + OPString + "\"? = " + str(threadOPFound))
+    #print ("         ------- IS \"" + nameString + "\" in \"" + OPString + "\"? = " + str(threadOPFound))
   return threadOPFound
 #
 def runRulesEngine(threadObject):

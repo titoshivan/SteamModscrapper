@@ -1,9 +1,5 @@
 {
-    "password" :"1234567890",
-    "account": "botmail@isp.com",
-    "smtp": "smtp.server",
-    "port":465,
     "receiver": "titoshivan@gmail.com",
-    "message": "emailbody string",
-    "rescantimer": 5
+    "rescantimer": 5,
+    "pages": 2
 }

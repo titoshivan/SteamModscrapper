@@ -3,6 +3,5 @@
     "account": "botmail@isp.com",
     "accountname": "Steam Moderation Bot",
     "smtp": "smtp.server",
-    "port":465,
-    "rescantimer": 5
+    "port":465
 }
