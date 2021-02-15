@@ -22,6 +22,7 @@ emailcontent = ''
 ScanTimer = properties["rescantimer"] #Delay between requesting pages
 #TODO make the number of pages forum dependent moving it to watchlist.json property
 pagesToScan = properties["pages"]+1 #Number of pages to scan in each forum
+debugMode = properties["debug"] #Activate verbose mode for debug
 #-----------------------------------
 
 for URL in pages["URLS"]:
@@ -42,14 +43,16 @@ for URL in pages["URLS"]:
           threadTitle = each.find(class_='forum_topic_name')
           threadOP = each.find(class_="forum_topic_op")
           threadTitleUP = str(threadTitle.text.strip())
-          print("scanning page "+str(pagecount)+" ----> thread "+ threadTitleUP+ " by " +str(threadOP.text.strip()))
+          if debugMode > 0:
+              print("scanning page "+str(pagecount)+" ----> thread "+ threadTitleUP+ " by " +str(threadOP.text.strip()))
           #TODO Here we should have a proper rules engine.
           # x= item in threadTitleUP.upper()
-          matchFound = ruleEngine.runRulesEngine(each)
+          matchFound = ruleEngine.runRulesEngine(each, properties)
           #print(ruleEngine.runRulesEngine(each))
           #print('chequeando positivo')
           if matchFound :
-              print('hilo coincidente')
+              if debugMode >0:
+                  print('hilo coincidente')
               #print(threadURL['href'], end=' subject: ')
               #print(threadTitle.text.strip(), end=' By: ')
               #print(threadOP.text.strip())
