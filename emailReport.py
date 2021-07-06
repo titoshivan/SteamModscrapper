@@ -1,6 +1,7 @@
 #TODO give proper format to mail from/to/subject/content
 #TODO Make the email fancy with proper HTML and URL tagging
 
+import logging, datetime
 import smtplib, ssl, json
 #
 from email.mime.text import MIMEText
@@ -27,11 +28,11 @@ bodyHeader = "The following threads have been detected by the Steam Automod: \n"
 #Loading server 
 def sendReport (receiver, content):
     try: 
-        print("·······SENDING MAIL············")
-        print("From  : "+senderName)
-        print("To: "+ receiver)
-        print("Subject: " + subject)
-        print('Content:'+ content)
+        logging.info(str(datetime.datetime.utcnow()) + "SENDING REPORT EMAIL: "+ "From: "+ senderName + ", To: " + receiver + ", Subject: " + subject)
+        logging.info(str(datetime.datetime.utcnow()) + 'SENDING REPORT EMAIL: CONTENT: \n')
+        logging.info(str(datetime.datetime.utcnow()) + '********************************\n')
+        logging.info(str(datetime.datetime.utcnow()) + content)
+        logging.info(str(datetime.datetime.utcnow()) + '********************************\n')
         #
         msg = MIMEMultipart()
         msg['From'] = senderName
@@ -45,6 +46,7 @@ def sendReport (receiver, content):
         server = smtplib.SMTP_SSL(smtp_server, port, context=context)
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver, text)
+        logging.info(str(datetime.datetime.utcnow()) + ' REPORT EMAIL SENT')
     except Exception as ex:
-        print("Exception: "+str(ex))
+        logging.error(str(datetime.datetime.utcnow()) +  " REPORT EMAIL SENDMAIL EXCEPTION: "+str(ex))
 

@@ -1,9 +1,8 @@
 #TODO actually login in Steam
 #TODO launch delete/ban on positive.
-#TODO create a log file
-import requests, time, json
+import requests, time, json, datetime
 from bs4 import BeautifulSoup
-import emailReport, ruleEngine 
+import emailReport, ruleEngine, logging
 
 #---Load properties from file----
 with open('properties.json') as f:
@@ -25,6 +24,9 @@ pagesToScan = properties["pages"]+1 #Number of pages to scan in each forum
 debugMode = properties["debug"] #Activate verbose mode for debug
 #-----------------------------------
 
+#------------setting up logging-----------
+logging.basicConfig(filename="steam_mod_log.log", level=logging.INFO)
+#-----------------------------------
 for URL in pages["URLS"]:
   for pagecount in range(1,pagesToScan):
 
@@ -38,20 +40,19 @@ for URL in pages["URLS"]:
           threadURL = each.find('a', href=True)
           threadTitle = each.find(class_='forum_topic_name')
           threadOP = each.find(class_="forum_topic_op")
-          threadTitleUP = str(threadTitle.text.strip())
+          threadTitleUP = str(threadTitle.text.strip()).replace("\r\n"," ").replace("\t","")
 
-          if debugMode > 0:
-              print("scanning page "+str(pagecount)+" ----> thread "+ threadTitleUP+ " by " +str(threadOP.text.strip()))
+          logging.info(str(datetime.datetime.utcnow()) + " scanning page "+str(pagecount)+" ----> thread "+ threadTitleUP+ " by " +str(threadOP.text.strip()))
 
           matchFound = ruleEngine.runRulesEngine(each, properties)
 
           if matchFound :
 
-              if debugMode >0:
-                  print('Matching thread')
+              logging.info(str(datetime.datetime.utcnow()) + ' MATCHING THREAD FOUND !!! ---->' + threadTitleUP)
 
               #TODO move formating of positives to it's own module
-              emailcontent = emailcontent + "Title: \"" + str(threadTitle.text.strip()) + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
+              #emailcontent = emailcontent + "Title: \"" + str(threadTitle.text.strip()) + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
+              emailcontent = emailcontent + "Title: \"" + threadTitleUP + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
       time.sleep(ScanTimer)
       
 if emailcontent != '':
