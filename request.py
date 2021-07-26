@@ -2,7 +2,7 @@
 #TODO launch delete/ban on positive.
 import requests, time, json, datetime
 from bs4 import BeautifulSoup
-import emailReport, ruleEngine, logging
+import emailReport, ruleEngine, logging, slackReport
 
 #---Load properties from file----
 with open('properties.json') as f:
@@ -56,4 +56,7 @@ for URL in pages["URLS"]:
       time.sleep(ScanTimer)
       
 if emailcontent != '':
-    emailReport.sendReport(receiver_email, emailcontent)
+    if properties["Report_Channel"] == 'Email':
+      emailReport.sendReport(receiver_email, emailcontent)
+    if properties["Report_Channel"] == 'Slack':
+      slackReport.post_message(emailcontent)

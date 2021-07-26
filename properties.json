@@ -2,5 +2,6 @@
     "receiver": "titoshivan@gmail.com",
     "rescantimer": 5,
     "pages": 2,
-    "debug": 0
+    "debug": 0,
+    "Report_Channel": "Slack"
 }
