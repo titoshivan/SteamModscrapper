@@ -17,7 +17,7 @@ with open('watchlist.json') as f:
 
 #---Setting up the email---------------
 receiver_email = properties["receiver"]
-emailcontent = ''
+reportContent = ''
 ScanTimer = properties["rescantimer"] #Delay between requesting pages
 #TODO make the number of pages forum dependent moving it to watchlist.json property
 pagesToScan = properties["pages"]+1 #Number of pages to scan in each forum
@@ -37,6 +37,7 @@ for URL in pages["URLS"]:
       results = soup.find_all(class_='unread')
 
       for each in results:
+          #TODO Sanitize data entry to avoid screwing JSON formatting
           threadURL = each.find('a', href=True)
           threadTitle = each.find(class_='forum_topic_name')
           threadOP = each.find(class_="forum_topic_op")
@@ -51,12 +52,15 @@ for URL in pages["URLS"]:
               logging.info(str(datetime.datetime.utcnow()) + ' MATCHING THREAD FOUND !!! ---->' + threadTitleUP)
 
               #TODO move formating of positives to it's own module
-              #emailcontent = emailcontent + "Title: \"" + str(threadTitle.text.strip()) + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
-              emailcontent = emailcontent + "Title: \"" + threadTitleUP + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
+              #reportContent = reportContent + "Title: \"" + str(threadTitle.text.strip()) + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
+              if properties["Report_Channel"] == 'Email':
+                reportContent = reportContent + "Title: \"" + threadTitleUP + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
+              if properties["Report_Channel"] == 'Slack':
+                reportContent = reportContent + ',{"type": "section","fields": [{"type": "mrkdwn","text": "*SUBJECT:* '+threadTitleUP+'"},{"type": "mrkdwn","text": "*Posted By:* '+str(threadOP.text.strip())+'"}]},{"type": "section","fields": [{"type": "mrkdwn","text": "*URL:* <'+str(threadURL['href'])+'>"}]}'
       time.sleep(ScanTimer)
       
-if emailcontent != '':
+if reportContent != '':
     if properties["Report_Channel"] == 'Email':
-      emailReport.sendReport(receiver_email, emailcontent)
+      emailReport.sendReport(receiver_email, reportContent)
     if properties["Report_Channel"] == 'Slack':
-      slackReport.post_message(emailcontent)
+      print(slackReport.post_message(reportContent))
