@@ -10,6 +10,11 @@
             "username": ""
         },
         {
+            "rulename": "SERENE Rule",
+            "SubjectString" : "SERENE",
+            "username": ""
+        },
+        {
             "rulename": "Posted by CAPOTELLI",
             "SubjectString" : "",
             "username": "CAPOTELLI"
@@ -18,11 +23,5 @@
             "rulename": "STEAM in title",
             "SubjectString" : "STEAM",
             "username": ""
-        }
-        ,
-        {
-            "rulename": "STEAMWORKS HEYOUNG",
-            "SubjectString" : "STEAMWORKS",
-            "username": "HEYOUNG"
         }
 ]

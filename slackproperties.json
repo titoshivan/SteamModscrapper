@@ -2,5 +2,6 @@
     "slack_token" : "Your_slack_app_token",
     "slack_channel" : "Slack_channel_or UserID",
     "slack_icon_emoji" : ":see_no_evil:",
-    "slack_user_name" : "Slack Modbot"
+    "slack_user_name" : "Slack Modbot",
+    "slack_notification_message" : "Threads requiring action detected"
 }

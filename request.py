@@ -41,7 +41,7 @@ for URL in pages["URLS"]:
           threadURL = each.find('a', href=True)
           threadTitle = each.find(class_='forum_topic_name')
           threadOP = each.find(class_="forum_topic_op")
-          threadTitleUP = str(threadTitle.text.strip()).replace("\r\n"," ").replace("\t","")
+          threadTitleUP = str(threadTitle.text.strip()).replace("\r\n"," ").replace("\t","").replace("\"","")
 
           logging.info(str(datetime.datetime.utcnow()) + " scanning page "+str(pagecount)+" ----> thread "+ threadTitleUP+ " by " +str(threadOP.text.strip()))
 
@@ -53,14 +53,17 @@ for URL in pages["URLS"]:
 
               #TODO move formating of positives to it's own module
               #reportContent = reportContent + "Title: \"" + str(threadTitle.text.strip()) + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
+              #
               if properties["Report_Channel"] == 'Email':
                 reportContent = reportContent + "Title: \"" + threadTitleUP + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
               if properties["Report_Channel"] == 'Slack':
-                reportContent = reportContent + ',{"type": "section","fields": [{"type": "mrkdwn","text": "*SUBJECT:* '+threadTitleUP+'"},{"type": "mrkdwn","text": "*Posted By:* '+str(threadOP.text.strip())+'"}]},{"type": "section","fields": [{"type": "mrkdwn","text": "*URL:* <'+str(threadURL['href'])+'>"}]}'
+                reportContent = reportContent + ',{"type": "section","fields": [{"type": "mrkdwn","text": "*SUBJECT:* '+threadTitleUP+'"}]},{"type": "section","fields": [{"type": "mrkdwn","text": "*URL:* <'+str(threadURL['href'])+'|Link>"},{"type": "mrkdwn","text": "*Posted By:* '+str(threadOP.text.strip())+'"}]},{"type": "divider"}'
       time.sleep(ScanTimer)
       
 if reportContent != '':
+    #TODO make sending report its own method
     if properties["Report_Channel"] == 'Email':
       emailReport.sendReport(receiver_email, reportContent)
     if properties["Report_Channel"] == 'Slack':
-      print(slackReport.post_message(reportContent))
+      slackReport.post_message(reportContent)
+      #print(slackReport.post_message(reportContent))
