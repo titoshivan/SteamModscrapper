@@ -2,7 +2,7 @@
 #TODO launch delete/ban on positive.
 import requests, time, json, datetime
 from bs4 import BeautifulSoup
-import emailReport, ruleEngine, logging, slackReport
+import emailReport, ruleEngine, logging, slackReport, formatter
 
 #---Load properties from file----
 with open('properties.json') as f:
@@ -31,33 +31,25 @@ for URL in pages["URLS"]:
   for pagecount in range(1,pagesToScan):
 
       page = requests.get(URL+str(pagecount))
-
       soup = BeautifulSoup(page.content, 'html.parser')
-
       results = soup.find_all(class_='unread')
 
       for each in results:
-          #TODO Sanitize data entry to avoid screwing JSON formatting
-          threadURL = each.find('a', href=True)
-          threadTitle = each.find(class_='forum_topic_name')
-          threadOP = each.find(class_="forum_topic_op")
-          threadTitleUP = str(threadTitle.text.strip()).replace("\r\n"," ").replace("\t","").replace("\"","")
+          #TODO properly Sanitize data entry to avoid screwing JSON formatting
+          threadURL = str(each.find('a', href=True)['href'])
+          threadOP = str(each.find(class_="forum_topic_op").text.strip())
+          threadTitle = str(each.find(class_='forum_topic_name').text.strip()).replace("\r\n"," ").replace("\t","").replace("\"","")
 
-          logging.info(str(datetime.datetime.utcnow()) + " scanning page "+str(pagecount)+" ----> thread "+ threadTitleUP+ " by " +str(threadOP.text.strip()))
+          logging.info(str(datetime.datetime.utcnow()) + " scanning page "+str(pagecount)+" ----> thread "+ threadTitle+ " by " +threadOP)
 
           matchFound = ruleEngine.runRulesEngine(each, properties)
 
           if matchFound :
 
-              logging.info(str(datetime.datetime.utcnow()) + ' MATCHING THREAD FOUND !!! ---->' + threadTitleUP)
+              logging.info(str(datetime.datetime.utcnow()) + ' MATCHING THREAD FOUND !!! ---->' + threadTitle)
+              #formatting the report
+              reportContent = formatter.formatReport(reportContent, threadTitle, threadOP, threadURL, properties["Report_Channel"] )
 
-              #TODO move formating of positives to it's own module
-              #reportContent = reportContent + "Title: \"" + str(threadTitle.text.strip()) + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
-              #
-              if properties["Report_Channel"] == 'Email':
-                reportContent = reportContent + "Title: \"" + threadTitleUP + "\"\nBy \"" +str(threadOP.text.strip()) + "\"\n" + str(threadURL['href'] + "\n\n") 
-              if properties["Report_Channel"] == 'Slack':
-                reportContent = reportContent + ',{"type": "section","fields": [{"type": "mrkdwn","text": "*SUBJECT:* '+threadTitleUP+'"}]},{"type": "section","fields": [{"type": "mrkdwn","text": "*URL:* <'+str(threadURL['href'])+'|Link>"},{"type": "mrkdwn","text": "*Posted By:* '+str(threadOP.text.strip())+'"}]},{"type": "divider"}'
       time.sleep(ScanTimer)
       
 if reportContent != '':
@@ -65,5 +57,5 @@ if reportContent != '':
     if properties["Report_Channel"] == 'Email':
       emailReport.sendReport(receiver_email, reportContent)
     if properties["Report_Channel"] == 'Slack':
-      slackReport.post_message(reportContent)
+      logging.info(str(datetime.datetime.utcnow()) + "Posting message result" + str(slackReport.post_message(reportContent)))
       #print(slackReport.post_message(reportContent))
