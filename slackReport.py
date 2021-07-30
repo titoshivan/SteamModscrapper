@@ -1,15 +1,15 @@
-import requests, logging, datetime
+import requests, logging, utils
 import json
 #with open('slackproperties.json') as f:  #Right properties file for release
 with open('slackproperties_valid.json') as f: #For dev purposes remove for release
   Properties = json.load(f)
 #TODO: Move header and footer to properties
 reportHeader = '[{"type": "header","text": {"type": "plain_text","text": "WARNING: Actionable Thread(s) detected","emoji": true}},{"type": "divider"}'
-reportfooter = ',{"type": "section","text": {"type": "mrkdwn","text": "*Report Date:* ' + str(datetime.datetime.utcnow()) +' (UTC)"}},{"type": "divider"}]'
+reportfooter = ',{"type": "section","text": {"type": "mrkdwn","text": "*Report Date:* ' + utils.getTimestamp() +' (UTC)"}},{"type": "divider"}]'
 #--------------------------
 def post_message(blocks):
     reportdata= reportHeader + blocks + reportfooter
-    logging.info(str(datetime.datetime.utcnow()) + 'PREPARING JSON: ' + reportdata)
+    logging.info(utils.getTimestamp() + 'PREPARING JSON: ' + reportdata)
     reportBody = json.loads(reportdata)
     notificationText = Properties["slack_notification_message"]
     #reportBody = json.loads(testblocks)

@@ -15,9 +15,9 @@
             "username": ""
         },
         {
-            "rulename": "Posted by CAPOTELLI",
-            "SubjectString" : "",
-            "username": "CAPOTELLI"
+            "rulename": "Testing Specialchars",
+            "SubjectString" : "WEBHELPER",
+            "username": ""
         },
         {
             "rulename": "STEAM in title",

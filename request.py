@@ -1,8 +1,8 @@
 #TODO actually login in Steam
 #TODO launch delete/ban on positive.
-import requests, time, json, datetime
+import requests, json, datetime, time
 from bs4 import BeautifulSoup
-import emailReport, ruleEngine, logging, slackReport, formatter
+import emailReport, ruleEngine, logging, slackReport, formatter, utils
 
 #---Load properties from file----
 with open('properties.json') as f:
@@ -35,20 +35,18 @@ for URL in pages["URLS"]:
       results = soup.find_all(class_='unread')
 
       for each in results:
-          #TODO properly Sanitize data entry to avoid screwing JSON formatting
+          #TODO This should be a 'report' class
           threadURL = str(each.find('a', href=True)['href'])
-          threadOP = str(each.find(class_="forum_topic_op").text.strip())
-          threadTitle = str(each.find(class_='forum_topic_name').text.strip()).replace("\r\n"," ").replace("\t","").replace("\"","")
-
-          logging.info(str(datetime.datetime.utcnow()) + " scanning page "+str(pagecount)+" ----> thread "+ threadTitle+ " by " +threadOP)
-
+          threadOP = utils.sanitizeString(each.find(class_="forum_topic_op").text.strip())
+          threadTitle = utils.sanitizeString(each.find(class_='forum_topic_name').text.strip())
+          #
+          logging.info(utils.getTimestamp() + " scanning page "+str(pagecount)+" ----> thread "+ threadTitle+ " by " +threadOP)
           matchFound = ruleEngine.runRulesEngine(each, properties)
 
           if matchFound :
-
-              logging.info(str(datetime.datetime.utcnow()) + ' MATCHING THREAD FOUND !!! ---->' + threadTitle)
-              #formatting the report
-              reportContent = formatter.formatReport(reportContent, threadTitle, threadOP, threadURL, properties["Report_Channel"] )
+              logging.info(utils.getTimestamp() + ' MATCHING THREAD FOUND !!! ---->' + threadTitle)
+              #formatting the report with the new information
+              reportContent =reportContent + formatter.formatReport( threadTitle, threadOP, threadURL, properties["Report_Channel"] )
 
       time.sleep(ScanTimer)
       
